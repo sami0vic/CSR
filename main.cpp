@@ -103,6 +103,7 @@ void handleEncryption(const string& cipher, const string& text, const string& ke
             cout<<"Encrypted text: "<<CSREncrypt(text, shift)<<'\n';
         } catch(const invalid_argument& e){
             cout<<"Invalid key for CSR cipher. It should be an integer."<<'\n';
+            cout<<"Usage: encrypt <cipher> <key> <text>"<<'\n';
         }
     } else if(cipher == "-caesar"){
         try{
@@ -111,6 +112,7 @@ void handleEncryption(const string& cipher, const string& text, const string& ke
             cout<<"Encrypted text: "<<caesarEncrypt(text, shift)<<'\n';
         } catch(const invalid_argument& e){
             cout<<"Invalid key for Caesar cipher. It should be an integer."<<'\n';
+            cout<<"Usage: encrypt <cipher> <key> <text>"<<'\n';
         }
     } else{
         cout<<"Unknown cipher: "<<cipher<<'\n';
@@ -135,6 +137,7 @@ void handleDecryption(const string& cipher, const string& text, const string& ke
             cout<<"Encrypted text: "<<CSRDecrypt(text, shift)<<'\n';
         } catch(const invalid_argument& e){
             cout<<"Invalid key for CSR cipher. It should be an integer."<<'\n';
+            cout<<"Usage: decrypt <cipher> <key> <text>"<<'\n';
         }
     } else if(cipher == "-caesar"){
         try{
@@ -143,6 +146,7 @@ void handleDecryption(const string& cipher, const string& text, const string& ke
             cout<<"Decrypted text: "<<caesarDecrypt(text, shift)<<'\n';
         } catch(const invalid_argument& e){
             cout<<"Invalid key for Caesar cipher. It should be an integer."<<'\n';
+            cout<<"Usage: decrypt <cipher> <key> <text>"<<'\n';
         }
     } else{
         cout<<"Unknown cipher: "<<cipher<<'\n';
