@@ -25,6 +25,7 @@ using namespace std;
 // Function declarations for CSR cipher
 string CSREncrypt(const string& text, int shift);
 string CSRDecrypt(const string& text, int shift);
+string SpiralMatrix(int n, const string& plaintext, int m);
 
 // Additional cipher functions
 string caesarEncrypt(const string& text, int shift);
