@@ -16,21 +16,27 @@
 
 
 #include "CSR.h"
+#include <bits/stdc++.h>
 
 
-string encrypt(const string& text, const string& key) {
-    string encrypted = text;
-    for (size_t i = 0; i < text.size(); ++i) {
-        encrypted[i] = text[i] + key[i % key.size()];
+string CSREncrypt(const string& text, int shift) {
+    string plaintext = text;
+    string edited = "";
+    string output = "";
+    for(int i=0; i<plaintext.size(); i++){
+        if(plaintext[i] == ' '){
+            edited += '$';
+        } else{
+            edited += plaintext[i];
+        }
     }
-    return encrypted;
+    edited = caesarEncrypt(edited, shift);
+    return edited;
 }
 
-string decrypt(const string& text, const string& key) {
+string CSRDecrypt(const string& text, int shift) {
     string decrypted = text;
-    for (size_t i = 0; i < text.size(); ++i) {
-        decrypted[i] = text[i] - key[i % key.size()];
-    }
+
     return decrypted;
 }
 

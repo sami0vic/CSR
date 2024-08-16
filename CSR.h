@@ -23,8 +23,8 @@
 using namespace std;
 
 // Function declarations for CSR cipher
-string encrypt(const string& text, const string& key);
-string decrypt(const string& text, const string& key);
+string CSREncrypt(const string& text, int shift);
+string CSRDecrypt(const string& text, int shift);
 
 // Additional cipher functions
 string caesarEncrypt(const string& text, int shift);

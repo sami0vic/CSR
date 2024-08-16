@@ -97,8 +97,13 @@ void displayRotatingBackslash(int durationSeconds, string s){
 // Function to Handle Encryption
 void handleEncryption(const string& cipher, const string& text, const string& key){
     if(cipher == "-csr"){
-        displayRotatingBackslash(2, "Encrypting the text, please wait ");
-        cout<<"Encrypted text: "<<encrypt(text, key)<<'\n';
+        try{
+            int shift = stoi(key);
+            displayRotatingBackslash(2, "Encrypting the text, please wait ");
+            cout<<"Encrypted text: "<<CSREncrypt(text, shift)<<'\n';
+        } catch(const invalid_argument& e){
+            cout<<"Invalid key for CSR cipher. It should be an integer."<<'\n';
+        }
     } else if(cipher == "-caesar"){
         try{
             int shift = stoi(key);
@@ -124,8 +129,13 @@ void caesarBruteForce(const string& text){
 // Function to Handle Decryption
 void handleDecryption(const string& cipher, const string& text, const string& key){
     if(cipher == "-csr"){
-        displayRotatingBackslash(2, "Decrypting the text, please wait ");
-        cout<<"Decrypted text: "<<decrypt(text, key)<<'\n';
+        try{
+            int shift = stoi(key);
+            displayRotatingBackslash(2, "Decrypting the text, please wait ");
+            cout<<"Encrypted text: "<<CSRDecrypt(text, shift)<<'\n';
+        } catch(const invalid_argument& e){
+            cout<<"Invalid key for CSR cipher. It should be an integer."<<'\n';
+        }
     } else if(cipher == "-caesar"){
         try{
             int shift = stoi(key);
