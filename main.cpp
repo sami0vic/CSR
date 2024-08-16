@@ -139,11 +139,7 @@ void handleDecryption(const string& cipher, const string& text, const string& ke
     }
 }
 
-// Simple Ping Function
-void ping(const string& ip) {
-    string command = "ping -c 4 " + ip;
-    system(command.c_str());
-}
+
 
 int main(){
     clearScreen();
@@ -171,7 +167,6 @@ int main(){
             cout<<CYAN<<"    exit        - Exit the console\n";
             cout<<CYAN<<"    cipher      - Show all the Available Ciphers\n";
             cout<<CYAN<<"    echo <text> - Print the text\n";
-            cout<<CYAN<<"    ping <IP>   - check if the IP address is reachable\n";
             cout<<CYAN<<"    encrypt <cipher> <key> <text> - Encrypt text with specified cipher\n";
             cout<<CYAN<<"    decrypt <cipher> <key> <text> - Decrypt text with specified cipher\n";
             cout<<CYAN<<"    bruteforce <cipher> <text>    - Brute force decrypt text with specified cipher\n";
@@ -180,15 +175,6 @@ int main(){
             cout<<CYAN<<"    CSR     - Developed by SAMI&REDA\n";
             cout<<CYAN<<"    Caesar  - Developed by Gaius Julius Caesar\n";
             cout<<CYAN<<"    Base64  - Developed by Internet Engineering Task Force (IETF)\n";
-        } else if(command.rfind("ping", 0)== 0){ // Ping 📍
-            istringstream iss(command);
-            string cmd, ip;
-            iss >> cmd;
-            getline(iss, ip);
-            if (!ip.empty() && ip[0] == ' ') {
-                ip = ip.substr(1);
-            }
-            ping(ip);
         } else if(command.rfind("echo", 0)== 0){ // Echo a.k.a print 🖨️
             istringstream iss(command);
             string cmd, text;
