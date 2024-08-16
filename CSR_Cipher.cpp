@@ -19,10 +19,12 @@
 #include <bits/stdc++.h>
 
 
-string CSREncrypt(const string& text, int shift) {
+string CSREncrypt(const string& text, int shift){
+    // Declaring string variables to work
     string plaintext = text;
     string edited = "";
     string output = "";
+    // Replacing white spaces with '$'
     for(int i=0; i<plaintext.size(); i++){
         if(plaintext[i] == ' '){
             edited += '$';
@@ -30,17 +32,65 @@ string CSREncrypt(const string& text, int shift) {
             edited += plaintext[i];
         }
     }
+    // Doing Caesar Encryption
     edited = caesarEncrypt(edited, shift);
-    return edited;
+    // Calculating the size of the matrix n based on the size of the string
+    int m = edited.size();
+    int n = ceil(sqrt(m));
+    // Calling function SpiralMatrix to encrypt the string edited
+    output = SpiralMatrix(n, edited, m);
+    return output;
 }
 
-string CSRDecrypt(const string& text, int shift) {
-    string decrypted = text;
-
-    return decrypted;
+string CSRDecrypt(const string& text, int shift){
+    // For you Reda 😘
 }
 
-string caesarEncrypt(const string& text, int shift) {
+string SpiralMatrix(int n, const string& plaintext, int m){
+    vector<vector<char>> matrix(n, vector<char>(n));
+    string normal = plaintext;
+    string final = "";
+
+    // To track our position in the string normal
+    int track0 = 0;
+    // To fill the matrix with the string normal
+    for(int i=0; i<n; i++){
+        for(int j=0; j<n; j++){
+            if(track0 < m){
+                matrix[i][j] = normal[track0];
+                track0++;
+            } else{
+                matrix[i][j] = '$';
+            }
+            
+        }
+    }
+    // Traversing the matrix as a spiral to produce the string final
+    final += matrix[0][0];
+    int value = 1;
+    while(value<n){
+        if(value%2 == 1){
+            for(int i=0; i<value+1; i++){
+                final += matrix[i][value];
+            }
+            for(int i=value-1; i>=0; i--){
+                final += matrix[value][i];
+            }
+        }
+        if(value%2 == 0){
+            for(int i=0; i<value+1; i++){
+                final += matrix[value][i];
+            }
+            for(int i=value-1; i>=0; i--){
+                final += matrix[i][value];
+            }
+        }
+        value++;
+    }
+    return final;
+}
+
+string caesarEncrypt(const string& text, int shift){
     string encrypted;
     shift = shift%26;
     for (char c : text) {
@@ -57,4 +107,3 @@ string caesarEncrypt(const string& text, int shift) {
 string caesarDecrypt(const string& text, int shift) {
     return caesarEncrypt(text, 26 - (shift % 26));
 }
-
