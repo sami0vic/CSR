@@ -14,7 +14,7 @@
 /* **************************************************************************** */
 
 
-// Include Libraries lol
+// Include Libraries
 #include <iostream>
 #include <string>
 #include <cstdlib>
