@@ -22,6 +22,10 @@
 #include <thread>
 #include <chrono>
 #include <sstream>
+#include <readline/readline.h>
+#include <readline/history.h>
+#include <vector>
+#include <cstring>
 #include "CSR.h"
 
 //Define Colors
@@ -153,27 +157,84 @@ void handleDecryption(const string& cipher, const string& text, const string& ke
     }
 }
 
+// List of Commands Available Now
+const vector<string> commands = {
+    "help", "clear", "cls", "exit", "cipher", "echo", "encrypt", "decrypt", "bruteforce"
+};
+
+// Command Completion Function
+char** command_completion(const char* text, int start, int end) {
+    static vector<string> matches;
+    matches.clear();
+
+    // Only provide completions for commands
+    if (start == 0) {
+        for (const auto& cmd : commands) {
+            if (cmd.find(text) == 0) {
+                matches.push_back(cmd);
+            }
+        }
+    } else {
+        // No completions for arguments
+        return nullptr;
+    }
+
+    // Convert matches to array of strings
+    char** result = (char**)malloc((matches.size() + 1) * sizeof(char*));
+    if (result == nullptr) {
+        // Handle memory allocation failure
+        return nullptr;
+    }
+
+    for (size_t i = 0; i < matches.size(); ++i) {
+        result[i] = strdup(matches[i].c_str());
+        if (result[i] == nullptr) {
+            // Handle strdup failure
+            while (i > 0) {
+                free(result[--i]);
+            }
+            free(result);
+            return nullptr;
+        }
+    }
+    result[matches.size()] = nullptr;
+    return result;
+}
+
 
 
 int main(){
     clearScreen();
-    
-    string command;
+    const char* prompt = ORANGE "csr> " RESET;
+    char* command;
+    using_history();
+    read_history("history.txt");
+
+    // Set Completion function
+    rl_attempted_completion_function = command_completion;
+
     // Taking Commands
     while(true){
-        cout<<ORANGE<<"csr> "<<RESET;
-        getline(cin, command);
+        command = readline(prompt);
+        if (command && *command) {
+            add_history(command);
+            write_history("history.txt");
+        }
+
+        string command_str(command);
+        free(command);
+
 
         // Command to erase the white spaces before & after the command
-        command.erase(0, command.find_first_not_of(' '));
-        command.erase(command.find_last_not_of(' ')+ 1);
+        command_str = command_str.substr(command_str.find_first_not_of(' '));
+        command_str = command_str.substr(0, command_str.find_last_not_of(' ') + 1);
 
         // Processing Command
-        if(command == "exit"){ // Exit :(
+        if(command_str == "exit"){ // Exit :(
             break;
-        } else if(command == "clear" || command == "cls"){ // Clear 🗑
+        } else if(command_str == "clear" || command_str == "cls"){ // Clear 🗑
             clearScreen();
-        } else if(command == "help"){ // Help Menu 🚨
+        } else if(command_str == "help"){ // Help Menu 🚨
             cout<<CYAN<<"Available commands:\n";
             cout<<CYAN<<"    help        - Show this help message\n";
             cout<<CYAN<<"    clear       - Clear the terminal\n";
@@ -184,65 +245,57 @@ int main(){
             cout<<CYAN<<"    encrypt <cipher> <key> <text> - Encrypt text with specified cipher\n";
             cout<<CYAN<<"    decrypt <cipher> <key> <text> - Decrypt text with specified cipher\n";
             cout<<CYAN<<"    bruteforce <cipher> <text>    - Brute force decrypt text with specified cipher\n";
-        } else if(command == "cipher"){ // Ciphers Menu 𝄃𝄃𝄂𝄂𝄀𝄁𝄃𝄂𝄂𝄃
+        } else if(command_str == "cipher"){ // Ciphers Menu 𝄃𝄃𝄂𝄂𝄀𝄁𝄃𝄂𝄂𝄃
             cout<<CYAN<<"Available Ciphers:\n";
             cout<<CYAN<<"    CSR     - Developed by SAMI&REDA\n";
             cout<<CYAN<<"    Caesar  - Developed by Gaius Julius Caesar\n";
             cout<<CYAN<<"    Base64  - Developed by Internet Engineering Task Force (IETF)\n";
-        } else if(command.rfind("echo", 0)== 0){ // Echo a.k.a print 🖨️
-            istringstream iss(command);
+        } else if(command_str.rfind("echo", 0) == 0){ // Echo a.k.a print 🖨️
+            istringstream iss(command_str);
             string cmd, text;
             iss >> cmd;
             getline(iss, text);
-            if (!text.empty() && text[0] == ' ') {
-                text = text.substr(1);
-            }
-            cout<<text<<'\n';
-        } else if(command.rfind("encrypt", 0)== 0){ // Encrypt 🔐
-            istringstream iss(command);
+            text = text.substr(text.find_first_not_of(' '));
+            cout << text << '\n';
+        } else if(command_str.rfind("encrypt", 0) == 0){ // Encrypt 🔐
+            istringstream iss(command_str);
             string cmd, cipher, key, text;
             iss >> cmd >> cipher >> key;
             getline(iss, text);
+            text = text.substr(text.find_first_not_of(' '));
 
-            text.erase(0, text.find_first_not_of(' '));
-            text.erase(text.find_last_not_of(' ')+ 1);
-
-            if(!cipher.empty()&& !key.empty()&& !text.empty()){
+            if(!cipher.empty() && !key.empty() && !text.empty()){
                 handleEncryption(cipher, text, key);
             } else{
-                cout<<"Usage: encrypt <cipher> <key> <text>"<<'\n';
+                cout << "Usage: encrypt <cipher> <key> <text>" << '\n';
             }
-        } else if(command.rfind("decrypt", 0)== 0){ // Decrypt 🔓
-            istringstream iss(command);
+        } else if(command_str.rfind("decrypt", 0) == 0){ // Decrypt 🔓
+            istringstream iss(command_str);
             string cmd, cipher, key, text;
             iss >> cmd >> cipher >> key;
             getline(iss, text);
+            text = text.substr(text.find_first_not_of(' '));
 
-            text.erase(0, text.find_first_not_of(' '));
-            text.erase(text.find_last_not_of(' ')+ 1);
-
-            if(!cipher.empty()&& !key.empty()&& !text.empty()){
+            if(!cipher.empty() && !key.empty() && !text.empty()){
                 handleDecryption(cipher, text, key);
             } else{
-                cout<<"Usage: decrypt <cipher> <key> <text>"<<'\n';
+                cout << "Usage: decrypt <cipher> <key> <text>" << '\n';
             }
-        } else if(command.rfind("bruteforce", 0)== 0){ // Bruteforce 🛠️
-            istringstream iss(command);
+        } else if(command_str.rfind("bruteforce", 0) == 0){ // Bruteforce 🛠️
+            istringstream iss(command_str);
             string cmd, cipher, text;
             iss >> cmd >> cipher;
             getline(iss, text);
+            text = text.substr(text.find_first_not_of(' '));
 
-            text.erase(0, text.find_first_not_of(' '));
-            text.erase(text.find_last_not_of(' ')+ 1);
-
-            if(!cipher.empty()&& !text.empty()){
+            if(!cipher.empty() && !text.empty()){
                 if(cipher == "-caesar"){
                     caesarBruteForce(text);
                 } else{
-                    cout<<"Unknown cipher for brute force: "<<cipher<<'\n';
+                    cout << "Unknown cipher for brute force: " << cipher << '\n';
                 }
             } else{
-                cout<<"Usage: bruteforce <cipher> <text>"<<'\n';
+                cout << "Usage: bruteforce <cipher> <text>" << '\n';
             }
         } else{
             cout<<"Unknown command: "<<command<<'\n';
