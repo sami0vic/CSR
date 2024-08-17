@@ -42,8 +42,40 @@ string CSREncrypt(const string& text, int shift){
     return output;
 }
 
-string CSRDecrypt(const string& text, int shift){
-    // For you Reda 😘
+void CSRDecrypt(const string& text, int shift){
+    int n = sqrt(text.size());
+    vector<vector<char>> Matrix(n,vector<char>(n));
+    int track = 0;
+    for(int i=0;i<n;i++){
+        if(i%2==1){
+            for(int j=0;j<i+1;j++){
+                Matrix[j][i] = text[track];
+                track++;
+            }
+            for(int j=i-1;j>=0;j--){
+                Matrix[i][j] = text[track];
+                track++;
+            }
+        }
+        if(i%2==0){
+            for(int j=0;j<i+1;j++){
+                Matrix[i][j] = text[track];
+                track++;
+            }
+            for(int j=i-1;j>=0;j--){
+                Matrix[j][i] = text[track];
+                track++;
+            }
+        }
+    }
+    string final = "";
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            if(Matrix[i][j] == '$') final += ' ';
+            else final += Matrix[i][j];
+        }
+    }
+    return caesarDecrypt(final,shift);
 }
 
 string SpiralMatrix(int n, const string& plaintext, int m){
