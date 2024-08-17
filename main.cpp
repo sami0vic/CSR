@@ -163,34 +163,29 @@ const vector<string> commands = {
 };
 
 // Command Completion Function
-char** command_completion(const char* text, int start, int end) {
+char** command_completion(const char* text, int start, int end){
     static vector<string> matches;
     matches.clear();
 
-    // Only provide completions for commands
-    if (start == 0) {
-        for (const auto& cmd : commands) {
-            if (cmd.find(text) == 0) {
+    if(start == 0){
+        for(const auto& cmd:commands){
+            if(cmd.find(text) == 0){
                 matches.push_back(cmd);
             }
         }
-    } else {
-        // No completions for arguments
+    } else{
         return nullptr;
     }
 
-    // Convert matches to array of strings
     char** result = (char**)malloc((matches.size() + 1) * sizeof(char*));
-    if (result == nullptr) {
-        // Handle memory allocation failure
+    if(result == nullptr){
         return nullptr;
     }
 
-    for (size_t i = 0; i < matches.size(); ++i) {
+    for(size_t i = 0; i < matches.size(); ++i){
         result[i] = strdup(matches[i].c_str());
-        if (result[i] == nullptr) {
-            // Handle strdup failure
-            while (i > 0) {
+        if(result[i] == nullptr){
+            while (i > 0){
                 free(result[--i]);
             }
             free(result);
@@ -213,6 +208,7 @@ int main(){
     // Set Completion function
     rl_attempted_completion_function = command_completion;
 
+
     // Taking Commands
     while(true){
         command = readline(prompt);
@@ -223,7 +219,6 @@ int main(){
 
         string command_str(command);
         free(command);
-
 
         // Command to erase the white spaces before & after the command
         command_str = command_str.substr(command_str.find_first_not_of(' '));

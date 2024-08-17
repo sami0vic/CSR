@@ -1,4 +1,11 @@
-dfdf
-encrypt -csr 2 hello world
-decrypt -csr 2 jg$qtnfynnq$$$$$
+echo hellp
+clear
+encrypt -csr 3 reda is my friend
+decrypt -csr 3 uhvl$iu$gdpl$$gq$$$$$$hb$
+help
+clear
+clear
+exit
+clear
+exit
 clear
