@@ -42,7 +42,7 @@ string CSREncrypt(const string& text, int shift){
     return output;
 }
 
-void CSRDecrypt(const string& text, int shift){
+string CSRDecrypt(const string& text, int shift){
     int n = sqrt(text.size());
     vector<vector<char>> Matrix(n,vector<char>(n));
     int track = 0;
