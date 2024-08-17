@@ -1,0 +1,4 @@
+dfdf
+encrypt -csr 2 hello world
+decrypt -csr 2 jg$qtnfynnq$$$$$
+clear
