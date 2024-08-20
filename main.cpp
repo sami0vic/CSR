@@ -1,12 +1,12 @@
 /* **************************************************************************** */
 /*                                                        _            _        */     
 /*                                                       / /\         /\ \      */
-/*   main.cpp                                           / /  \       /  \ \     */
+/*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                     / / /\ \__   / /\ \ \    */
 /*   By: sami0vic <soutidli>                          / / /\ \___\ / / /\ \_\   */
 /*                                                    \ \ \ \/___// / /_/ / /   */
 /*   Created: 2024/08/15 00:09:26 by soutidli          \ \ \     / / /__\/ /    */
-/*   Updated: 202?/??/?? ??:??:?? by soutidli           \ \ \   / / /_____/     */
+/*   Updated: 2024/08/19 18:47:39 by abderrahim       ###   ########.fr       */
 /*                                                /_/\__/ / /  / / /\ \ \       */
 /*                                                \ \/___/ /  / / /  \ \ \      */
 /*                                                 \_____\/   \/_/    \_\/.ma   */
@@ -15,20 +15,21 @@
 
 
 // Include Libraries
-#include <iostream>
-#include <string>
-#include <cstdlib>
+#include "CSR.h"
 #include <cctype>
-#include <thread>
-#include <chrono>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <sstream>
+#include <iostream>
+#include <chrono>
+#include <string>
+#include <thread>
+#include <vector>
 #include <readline/readline.h>
 #include <readline/history.h>
-#include <vector>
-#include <cstring>
-#include "CSR.h"
 
-//Define Colors
+// Define Colors
 #define RESET   "\033[0m"
 #define RED     "\033[31m"
 #define GREEN   "\033[32m"
@@ -39,10 +40,8 @@
 #define WHITE   "\033[37m"
 #define ORANGE  "\033[38;5;208m"
 
-using namespace std;
-
 // Some ASCII Art ;)
-const string CSR_ART = R"(
+const std::string CSR_ART = R"(
           _____                    _____                    _____          
          /\    \                  /\    \                  /\    \         
         /::\    \                /::\    \                /::\    \        
@@ -67,21 +66,25 @@ const string CSR_ART = R"(
 )";
 
 // function to display the App Banner
-void displayBanner(){
-    cout<<YELLOW<<CSR_ART<<RESET<<'\n';
-    cout<<RED<<"    Version: 3.3.0.1"<<RESET<<'\n';
-    cout<<CYAN<<"    Authors: SAMIOVIC & REDA"<<RESET<<'\n';
+void banner_display(){
+	std::cout << YELLOW << CSR_ART                      << RESET << std::endl;
+    std::cout << RED    << "\tVersion: 3.3.0.1"         << RESET << std::endl;
+    std::cout << CYAN   << "\tAuthors: SAMIOVIC & REDA" << RESET << std::endl;
 }
 
 // function to Clear
-void clearScreen(){
-    #if(defined(_WIN32) || defined(_WIN64) || defined(__linux__))
-        system("clear"); 
-    #else
-        system("cls");
-    #endif
+void screen_clear(){
+	// TODO(XENOBAS): replace with ansi escape code for erasure, look at:
+	// https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797#erase-functions
 
-    displayBanner();
+	std::cout << "\033[2J" << "\033[H" << std::endl;
+    /*#if(defined(_WIN32) || defined(_WIN64) || defined(__linux__))*/
+    /*    system("clear"); */
+    /*#else*/
+    /*    system("cls");*/
+    /*#endif*/
+
+    banner_display();
 }
 
 // Function to Animate the '/'
@@ -95,65 +98,64 @@ void displayRotatingBackslash(int durationSeconds, string s){
             this_thread::sleep_for(chrono::milliseconds(300));
         }
     }
-    cout<<"\r"<<"                                    "<<"\r"; 
+	std::cout << std::endl <<"\t\t\t\t" << std::endl; 
 }
 
 // Function to Handle Encryption
-void handleEncryption(const string& cipher, const string& text, const string& key){
+void command_encrypt(const string& cipher, const string& text, const string& key){
     if(cipher == "-csr"){
-        try{
-            int shift = stoi(key);
+        try {
+            int shift = std::stoi(key);
             displayRotatingBackslash(2, "Encrypting the text, please wait ");
-            cout<<"Encrypted text: "<<CSREncrypt(text, shift)<<'\n';
-        } catch(const invalid_argument& e){
-            cout<<"Invalid key for CSR cipher. It should be an integer."<<'\n';
-            cout<<"Usage: encrypt <cipher> <key> <text>"<<'\n';
+			std::cout << "Encrypted text: "<< encrypt_csr(text, shift) << std::endl;
+        } catch (const invalid_argument& e) {
+			std::cout << "Invalid key for CSR cipher. It should be an integer." << std::endl;
+            std::cout << "Usage: encrypt <cipher> <key> <text>" << std::endl;
         }
     } else if(cipher == "-caesar"){
-        try{
-            int shift = stoi(key);
+        try {
+            int shift = std::stoi(key);
             displayRotatingBackslash(2, "Encrypting the text, please wait ");
-            cout<<"Encrypted text: "<<caesarEncrypt(text, shift)<<'\n';
-        } catch(const invalid_argument& e){
-            cout<<"Invalid key for Caesar cipher. It should be an integer."<<'\n';
-            cout<<"Usage: encrypt <cipher> <key> <text>"<<'\n';
+			std::cout<< "Encrypted text: "<< encrypt_caesar(text, shift) << std::endl;
+        } catch (const invalid_argument& e) {
+			std::cout << "Invalid key for Caesar cipher. It should be an integer." << std::endl;
+			std::cout << "Usage: encrypt <cipher> <key> <text>" << std::endl;
         }
     } else{
-        cout<<"Unknown cipher: "<<cipher<<'\n';
+		std::cout << "Unknown cipher: " << cipher << std::endl;
     }
 }
 
 // Function to Brute Force Caesar Cipher
-void caesarBruteForce(const string& text){
-    cout<<"Brute force results:\n";
+void brute_force_caesar(const string& text){
+	std::cout << "Brute force results:" << std::endl;
     for(int shift = 1; shift < 26; ++shift){
-        string decrypted = caesarDecrypt(text, shift);
-        cout<<"   Shift "<<shift<<": "<<decrypted<<'\n';
+		std::cout << '\t' << "Shift " << shift << ":\t" << decrypt_caesar(text, shift) << std::endl;
     }
 }
 
 // Function to Handle Decryption
-void handleDecryption(const string& cipher, const string& text, const string& key){
-    if(cipher == "-csr"){
-        try{
-            int shift = stoi(key);
+void command_decrypt(const string& cipher, const string& text, const string& key){
+    if (cipher == "-csr") {
+        try {
+            int shift = std::stoi(key);
             displayRotatingBackslash(2, "Decrypting the text, please wait ");
-            cout<<"Encrypted text: "<<CSRDecrypt(text, shift)<<'\n';
+			std::cout << "Encrypted text: " << decrypt_csr(text, shift) << '\n';
         } catch(const invalid_argument& e){
-            cout<<"Invalid key for CSR cipher. It should be an integer."<<'\n';
-            cout<<"Usage: decrypt <cipher> <key> <text>"<<'\n';
+			std::cout << "Invalid key for CSR cipher. It should be an integer." << std::endl;
+            std::cout << "Usage: decrypt <cipher> <key> <text>" << std::endl;
         }
     } else if(cipher == "-caesar"){
-        try{
-            int shift = stoi(key);
+        try {
+            int shift = std::stoi(key);
             displayRotatingBackslash(2, "Decrypting the text, please wait ");
-            cout<<"Decrypted text: "<<caesarDecrypt(text, shift)<<'\n';
+			std::cout <<"Decrypted text: " << decrypt_caesar(text, shift) << std::endl;
         } catch(const invalid_argument& e){
-            cout<<"Invalid key for Caesar cipher. It should be an integer."<<'\n';
-            cout<<"Usage: decrypt <cipher> <key> <text>"<<'\n';
+			std::cout << "Invalid key for Caesar cipher. It should be an integer." << std::endl;
+            std::cout << "Usage: decrypt <cipher> <key> <text>" << std::endl;
         }
     } else{
-        cout<<"Unknown cipher: "<<cipher<<'\n';
+		std::cout << "Unrecognized cipher: " << cipher << std::endl;
     }
 }
 
@@ -167,20 +169,11 @@ char** command_completion(const char* text, int start, int end){
     static vector<string> matches;
     matches.clear();
 
-    if(start == 0){
-        for(const auto& cmd:commands){
-            if(cmd.find(text) == 0){
-                matches.push_back(cmd);
-            }
-        }
-    } else{
-        return nullptr;
-    }
+    if (start == 0) for(const auto& cmd:commands) { if(cmd.find(text) == 0) matches.push_back(cmd); }
+    else return nullptr;
 
-    char** result = (char**)malloc((matches.size() + 1) * sizeof(char*));
-    if(result == nullptr){
-        return nullptr;
-    }
+    char **result = (char**)malloc((matches.size() + 1) * sizeof(char*));
+    if(result == nullptr) return nullptr;
 
     for(size_t i = 0; i < matches.size(); ++i){
         result[i] = strdup(matches[i].c_str());
@@ -196,106 +189,125 @@ char** command_completion(const char* text, int start, int end){
     return result;
 }
 
+void	string_trim(std::string &str) {
+	// REFERENCE: https://stackoverflow.com/questions/216823/how-to-trim-a-stdstring
+	str.erase(0, str.find_first_not_of("\t\n\v\f\r "));
+	str.erase(str.find_last_not_of("\t\n\v\f\r ") + 1);
+}
 
+bool	string_has_prefix(std::string &haystack, const char *needle) {
+	if (haystack.size() < strlen(needle))
+		return (false);
+	return (strncmp(haystack.c_str(), needle, strlen(needle)) == 0);
+}
 
 int main(){
-    clearScreen();
-    const char* prompt = ORANGE "csr> " RESET;
-    char* command;
+    char*		command = nullptr;
+    const char	*prompt = "\001\033[38;5;208m\002csr>\001\033[0m\002";
+	const char *history_filename = "history.txt";
+
     using_history();
-    read_history("history.txt");
+	// history_no_expand_chars = (char *)" \t\n\r=$";
+    const int history_failure = read_history(history_filename);
+	if (history_failure) {
+		std::cerr << "[error] " << "could not read history with return code: " << history_failure << std::endl;
+		return (1);
+	}
 
     // Set Completion function
     rl_attempted_completion_function = command_completion;
 
+	// NOTE: Display banner only once everything is properly initalized.
+    screen_clear();
 
+	bool is_running = true;
+	std::vector<char *> session_history;
     // Taking Commands
-    while(true){
+    while (is_running) {
         command = readline(prompt);
         if (command && *command) {
             add_history(command);
-            write_history("history.txt");
-        }
+            write_history(history_filename);
+        } else {
+			free(command);
+			continue ;
+		}
 
-        string command_str(command);
-        free(command);
+		std::string command_str(command);
+		session_history.push_back(command);
 
         // Command to erase the white spaces before & after the command
-        command_str = command_str.substr(command_str.find_first_not_of(' '));
-        command_str = command_str.substr(0, command_str.find_last_not_of(' ') + 1);
+		string_trim(command_str);
 
         // Processing Command
-        if(command_str == "exit"){ // Exit :(
-            break;
-        } else if(command_str == "clear" || command_str == "cls"){ // Clear 🗑
-            clearScreen();
-        } else if(command_str == "help"){ // Help Menu 🚨
-            cout<<CYAN<<"Available commands:\n";
-            cout<<CYAN<<"    help        - Show this help message\n";
-            cout<<CYAN<<"    clear       - Clear the terminal\n";
-            cout<<CYAN<<"    cls         - Clear the terminal(WINDOWS Style)\n";
-            cout<<CYAN<<"    exit        - Exit the console\n";
-            cout<<CYAN<<"    cipher      - Show all the Available Ciphers\n";
-            cout<<CYAN<<"    echo <text> - Print the text\n";
-            cout<<CYAN<<"    encrypt <cipher> <key> <text> - Encrypt text with specified cipher\n";
-            cout<<CYAN<<"    decrypt <cipher> <key> <text> - Decrypt text with specified cipher\n";
-            cout<<CYAN<<"    bruteforce <cipher> <text>    - Brute force decrypt text with specified cipher\n";
-        } else if(command_str == "cipher"){ // Ciphers Menu 𝄃𝄃𝄂𝄂𝄀𝄁𝄃𝄂𝄂𝄃
-            cout<<CYAN<<"Available Ciphers:\n";
-            cout<<CYAN<<"    CSR     - Developed by SAMI&REDA\n";
-            cout<<CYAN<<"    Caesar  - Developed by Gaius Julius Caesar\n";
-            cout<<CYAN<<"    Base64  - Developed by Internet Engineering Task Force (IETF)\n";
-        } else if(command_str.rfind("echo", 0) == 0){ // Echo a.k.a print 🖨️
-            istringstream iss(command_str);
-            string cmd, text;
-            iss >> cmd;
-            getline(iss, text);
-            text = text.substr(text.find_first_not_of(' '));
-            cout << text << '\n';
-        } else if(command_str.rfind("encrypt", 0) == 0){ // Encrypt 🔐
-            istringstream iss(command_str);
-            string cmd, cipher, key, text;
+		if (command_str == "exit") {
+			is_running = false;
+		} else if (command_str == "cls" || command_str == "clear") {
+			screen_clear();
+		} else if (command_str == "help") {
+			std::cout << CYAN << "Available commands:" << std::endl;
+			std::cout << CYAN << "\thelp        - Show this help message" << std::endl;
+			std::cout << CYAN << "\tclear       - Clear the terminal" << std::endl;
+			std::cout << CYAN << "\tcls         - Clear the terminal(WINDOWS Style)" << std::endl;
+			std::cout << CYAN << "\texit        - Exit the console" << std::endl;
+			std::cout << CYAN << "\tcipher      - Show all the Available Ciphers" << std::endl;
+			std::cout << CYAN << "\techo <text> - Print the text" << std::endl;
+			std::cout << CYAN << "\tencrypt <cipher> <key> <text> - Encrypt text with specified cipher" << std::endl;
+			std::cout << CYAN << "\tdecrypt <cipher> <key> <text> - Decrypt text with specified cipher" << std::endl;
+			std::cout << CYAN << "\tbruteforce <cipher> <text>    - Brute force decrypt text with specified cipher" << std::endl;
+		} else if (command_str == "cipher") {
+			std::cout << CYAN << "Available Ciphers:" << std::endl;
+			std::cout << CYAN << "\tCSR     - Developed by SAMI&REDA" << std::endl;
+			std::cout << CYAN << "\tCaesar  - Developed by Gaius Julius Caesar" << std::endl;
+			std::cout << CYAN << "\tBase64  - Developed by Internet Engineering Task Force (IETF)" << std::endl;
+		} else if (command_str == "echo") {
+			std::string cmd, text;
+			std::istringstream iss(command_str);
+
+			getline(iss, text);
+			iss >> cmd;
+			text = text.substr(text.find_first_not_of(' '));
+
+			std::cout << text << '\n';
+		} else if (string_has_prefix(command_str, "encrypt")) { 
+			// DANGER: ^ is a very very bad idea, this lets command such as
+			// encryptaodsjoiasjhdoiqwheoiqhw -csr ....
+			istringstream iss(command_str);
+			string cmd, cipher, key, text;
+
+			iss >> cmd >> cipher >> key;
+			getline(iss, text);
+			string_trim(text);
+
+			if(!cipher.empty() && !key.empty() && !text.empty()) command_encrypt(cipher, text, key);
+			else std::cout << "Usage: encrypt <cipher> <key> <text>" << std::endl;
+		} else if (string_has_prefix(command_str, "decrypt")) { // Decrypt 🔓
+            std::string cmd, cipher, key, text;
+			std::istringstream iss(command_str);
+
             iss >> cmd >> cipher >> key;
             getline(iss, text);
-            text = text.substr(text.find_first_not_of(' '));
+			string_trim(text);
 
-            if(!cipher.empty() && !key.empty() && !text.empty()){
-                handleEncryption(cipher, text, key);
-            } else{
-                cout << "Usage: encrypt <cipher> <key> <text>" << '\n';
-            }
-        } else if(command_str.rfind("decrypt", 0) == 0){ // Decrypt 🔓
-            istringstream iss(command_str);
-            string cmd, cipher, key, text;
-            iss >> cmd >> cipher >> key;
-            getline(iss, text);
-            text = text.substr(text.find_first_not_of(' '));
+            if(!cipher.empty() && !key.empty() && !text.empty()) command_decrypt(cipher, text, key);
+            else std::cout << "Usage: decrypt <cipher> <key> <text>" << std::endl;
+        } else if (string_has_prefix(command_str, "bruteforce")) { // Bruteforce 🛠️
+            std::string			cmd, cipher, text;
+			std::istringstream	iss(command_str);
 
-            if(!cipher.empty() && !key.empty() && !text.empty()){
-                handleDecryption(cipher, text, key);
-            } else{
-                cout << "Usage: decrypt <cipher> <key> <text>" << '\n';
-            }
-        } else if(command_str.rfind("bruteforce", 0) == 0){ // Bruteforce 🛠️
-            istringstream iss(command_str);
-            string cmd, cipher, text;
             iss >> cmd >> cipher;
             getline(iss, text);
-            text = text.substr(text.find_first_not_of(' '));
+			string_trim(text);
 
-            if(!cipher.empty() && !text.empty()){
-                if(cipher == "-caesar"){
-                    caesarBruteForce(text);
-                } else{
-                    cout << "Unknown cipher for brute force: " << cipher << '\n';
-                }
-            } else{
-                cout << "Usage: bruteforce <cipher> <text>" << '\n';
+            if(!cipher.empty() && !text.empty()) {
+                if(cipher == "-caesar") brute_force_caesar(text);
+                else std::cout << "Unknown cipher for brute force: " << cipher << std::endl;
+            } else {
+				std::cout << "Usage: bruteforce <cipher> <text>" << std::endl;
             }
-        } else{
-            cout<<"Unknown command: "<<command<<'\n';
-        }
+        } else std::cout << "Unknown command: " << command_str << std::endl;
     }
 
+	for (auto line: session_history) free(line);
     return 0;
 }

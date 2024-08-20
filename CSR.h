@@ -1,12 +1,12 @@
 /* **************************************************************************** */
 /*                                                        _            _        */     
 /*                                                       / /\         /\ \      */
-/*   CSR.h                                              / /  \       /  \ \     */
+/*   CSR.h                                              :+:      :+:    :+:   */
 /*                                                     / / /\ \__   / /\ \ \    */
 /*   By: sami0vic <soutidli>                          / / /\ \___\ / / /\ \_\   */
 /*                                                    \ \ \ \/___// / /_/ / /   */
 /*   Created: 2024/08/15 00:09:26 by soutidli          \ \ \     / / /__\/ /    */
-/*   Updated: 202?/??/?? ??:??:?? by soutidli           \ \ \   / / /_____/     */
+/*   Updated: 2024/08/19 17:50:30 by abderrahim       ###   ########.fr       */
 /*                                                /_/\__/ / /  / / /\ \ \       */
 /*                                                \ \/___/ /  / / /  \ \ \      */
 /*                                                 \_____\/   \/_/    \_\/.ma   */
@@ -23,12 +23,12 @@
 using namespace std;
 
 // Function declarations for CSR cipher
-string CSREncrypt(const string& text, int shift);
-string CSRDecrypt(const string& text, int shift);
-string SpiralMatrix(int n, const string& plaintext, int m);
+std::string encrypt_csr(const std::string& text, int shift);
+std::string decrypt_csr(const std::string& text, int shift);
+std::string SpiralMatrix(int n, const std::string& plaintext, int m);
 
 // Additional cipher functions
-string caesarEncrypt(const string& text, int shift);
-string caesarDecrypt(const string& text, int shift);
+std::string encrypt_caesar(const std::string& text, int shift);
+std::string decrypt_caesar(const std::string& text, int shift);
 
 #endif // CSR_H

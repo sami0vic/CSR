@@ -1,12 +1,12 @@
 /* **************************************************************************** */
 /*                                                        _            _        */     
 /*                                                       / /\         /\ \      */
-/*   CSR_Cipher.cpp                                     / /  \       /  \ \     */
+/*   CSR_Cipher.cpp                                     :+:      :+:    :+:   */
 /*                                                     / / /\ \__   / /\ \ \    */
 /*   By: sami0vic <soutidli>                          / / /\ \___\ / / /\ \_\   */
 /*                                                    \ \ \ \/___// / /_/ / /   */
 /*   Created: 2024/08/15 00:09:26 by soutidli          \ \ \     / / /__\/ /    */
-/*   Updated: 202?/??/?? ??:??:?? by soutidli           \ \ \   / / /_____/     */
+/*   Updated: 2024/08/19 18:31:11 by abderrahim       ###   ########.fr       */
 /*                                                /_/\__/ / /  / / /\ \ \       */
 /*                                                \ \/___/ /  / / /  \ \ \      */
 /*                                                 \_____\/   \/_/    \_\/.ma   */
@@ -18,22 +18,20 @@
 #include "CSR.h"
 #include <bits/stdc++.h>
 
+const char space_replacement = '$';
 
-string CSREncrypt(const string& text, int shift){
+std::string encrypt_csr(const string& text, int shift){
     // Declaring string variables to work
-    string plaintext = text;
-    string edited = "";
-    string output = "";
-    // Replacing white spaces with '$'
-    for(int i=0; i<plaintext.size(); i++){
-        if(plaintext[i] == ' '){
-            edited += '$';
-        } else{
-            edited += plaintext[i];
-        }
+	std::string plaintext	= text;
+    std::string edited		= "";
+    std::string output		= "";
+    // Replacing white spaces with `space_replacement`
+    for (char rune: plaintext){
+        if (rune == ' ') edited += space_replacement;
+        else edited += rune;
     }
     // Doing Caesar Encryption
-    edited = caesarEncrypt(edited, shift);
+    edited = encrypt_caesar(edited, shift);
     // Calculating the size of the matrix n based on the size of the string
     int m = edited.size();
     int n = ceil(sqrt(m));
@@ -42,7 +40,7 @@ string CSREncrypt(const string& text, int shift){
     return output;
 }
 
-string CSRDecrypt(const string& text, int shift){
+std::string decrypt_csr(const string& text, int shift){
     int n = sqrt(text.size());
     vector<vector<char>> Matrix(n,vector<char>(n));
     int track = 0;
@@ -71,14 +69,14 @@ string CSRDecrypt(const string& text, int shift){
     string final = "";
     for(int i=0;i<n;i++){
         for(int j=0;j<n;j++){
-            if(Matrix[i][j] == '$') final += ' ';
+            if(Matrix[i][j] == space_replacement) final += ' ';
             else final += Matrix[i][j];
         }
     }
-    return caesarDecrypt(final,shift);
+    return decrypt_caesar(final,shift);
 }
 
-string SpiralMatrix(int n, const string& plaintext, int m){
+std::string SpiralMatrix(int n, const string& plaintext, int m){
     vector<vector<char>> matrix(n, vector<char>(n));
     string normal = plaintext;
     string final = "";
@@ -92,7 +90,7 @@ string SpiralMatrix(int n, const string& plaintext, int m){
                 matrix[i][j] = normal[track0];
                 track0++;
             } else{
-                matrix[i][j] = '$';
+                matrix[i][j] = space_replacement;
             }
             
         }
@@ -122,7 +120,7 @@ string SpiralMatrix(int n, const string& plaintext, int m){
     return final;
 }
 
-string caesarEncrypt(const string& text, int shift){
+std::string encrypt_caesar(const string& text, int shift){
     string encrypted;
     shift = shift%26;
     for (char c : text) {
@@ -136,6 +134,6 @@ string caesarEncrypt(const string& text, int shift){
     return encrypted;
 }
 
-string caesarDecrypt(const string& text, int shift) {
-    return caesarEncrypt(text, 26 - (shift % 26));
+std::string decrypt_caesar(const string& text, int shift) {
+    return encrypt_caesar(text, 26 - (shift % 26));
 }
