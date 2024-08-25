@@ -37,3 +37,16 @@ help
 clear
 encrypt -csr 2 pause
 decrypt -csr 2 rcgu$$$$w
+exit
+encrypt -csr 2 pause
+decrypt -csr 2 rcgu$$$$w
+echo hello
+exit
+echo hello
+clear
+exit
+exit
+encrypt -base64 0 sami
+exit
+encrypt -base64 0 sami
+decrypt -base64 0 c2FtaQ==

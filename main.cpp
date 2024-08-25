@@ -101,7 +101,7 @@ void displayRotatingBackslash(int durationSeconds, string s){
             this_thread::sleep_for(chrono::milliseconds(300));
         }
     }
-	cout << endl <<"\t\t\t\t" << endl; 
+	cout<<"\r"<<"                                    "<<"\r";
 }
 
 // Function to Handle Encryption
@@ -123,6 +123,15 @@ void command_encrypt(const string& cipher, const string& text, const string& key
         } catch (const invalid_argument& e) {
 			cout << "Invalid key for Caesar cipher. It should be an integer." << endl;
 			cout << "Usage: encrypt <cipher> <key> <text>" << endl;
+        }
+    }  else if(cipher == "-base64"){
+        try {
+            int shift = stoi(key);
+            displayRotatingBackslash(2, "Encrypting the text, please wait ");
+			cout<< "Encrypted text: "<< base64Encode(text) << endl;
+        } catch (const invalid_argument& e) {
+			cout << "Invalid key for Base64 cipher. It should be an integer." << endl;
+			cout << "Usage: encrypt <cipher> 0 <text>" << endl;
         }
     } else{
 		cout << "Unknown cipher: " << cipher << endl;
@@ -156,6 +165,15 @@ void command_decrypt(const string& cipher, const string& text, const string& key
         } catch(const invalid_argument& e){
 			cout << "Invalid key for Caesar cipher. It should be an integer." << endl;
             cout << "Usage: decrypt <cipher> <key> <text>" << endl;
+        }
+    } else if(cipher == "-base64"){
+        try {
+            int shift = stoi(key);
+            displayRotatingBackslash(2, "Decrypting the text, please wait ");
+			cout <<"Decrypted text: " << base64Decode(text) << endl;
+        } catch(const invalid_argument& e){
+			cout << "Invalid key for Base64 cipher. It should be an integer." << endl;
+            cout << "Usage: decrypt <cipher> 0 <text>" << endl;
         }
     } else{
 		cout << "Unrecognized cipher: " << cipher << endl;
@@ -265,13 +283,13 @@ int main(){
 			cout << CYAN << "\tBase64  - Developed by Internet Engineering Task Force (IETF)" << endl;
 		} else if (string_has_prefix(command_str, "echo")) {
 			string cmd, text;
-			istringstream iss(command_str);
+            istringstream iss(command_str);
+            iss >> cmd;
 
-			getline(iss, text);
-			iss >> cmd;
-			text = text.substr(text.find_first_not_of(' '));
+            getline(iss, text);
+            text = text.substr(text.find_first_not_of(' '));
 
-			cout << text << '\n';
+            cout << text << '\n';
 		} else if (string_has_prefix(command_str, "encrypt")) { 
 			// DANGER: ^ is a very very bad idea, this lets command such as
 			// encryptaodsjoiasjhdoiqwheoiqhw -csr ....

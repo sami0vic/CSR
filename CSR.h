@@ -21,12 +21,18 @@
 using namespace std;
 
 // Function declarations for CSR cipher
-std::string encrypt_csr(const std::string& text, int shift);
-std::string decrypt_csr(const std::string& text, int shift);
-std::string SpiralMatrix(int n, const std::string& plaintext, int m);
+string encrypt_csr(const string& text, int shift);
+string decrypt_csr(const string& text, int shift);
+string SpiralMatrix(int n, const string& plaintext, int m);
 
-// Additional cipher functions
-std::string encrypt_caesar(const std::string& text, int shift);
-std::string decrypt_caesar(const std::string& text, int shift);
+// Function declarations for Caesar cipher
+string encrypt_caesar(const string& text, int shift);
+string decrypt_caesar(const string& text, int shift);
+
+// Function declarations for Base64 cipher
+bool isBase64(unsigned char c);
+string base64Encode(const string &data);
+string base64Decode(const string &encoded_string);
+
 
 #endif // CSR_H
