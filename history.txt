@@ -9,3 +9,31 @@ exit
 clear
 exit
 clear
+clear
+encrypt -csr 2 hello world
+ H
+clear
+clear
+exit
+clear
+clear
+help
+cipher
+clear
+exit
+encrypt -csr 2 hello world
+decrypt -csr 2 jg$qtnfynnq$$$$$
+clear
+exit
+echo hello word
+echo
+echo hello
+hello
+echo
+exit
+echo hello world
+exit
+help
+clear
+encrypt -csr 2 pause
+decrypt -csr 2 rcgu$$$$w
