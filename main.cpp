@@ -302,7 +302,7 @@ int main(){
 
 			if(!cipher.empty() && !key.empty() && !text.empty()) command_encrypt(cipher, text, key);
 			else cout << "Usage: encrypt <cipher> <key> <text>" << endl;
-		} else if (string_has_prefix(command_str, "decrypt")) { // Decrypt 🔓
+		} else if (string_has_prefix(command_str, "decrypt")) { // Decrypt
             string cmd, cipher, key, text;
 			istringstream iss(command_str);
 
@@ -312,7 +312,7 @@ int main(){
 
             if(!cipher.empty() && !key.empty() && !text.empty()) command_decrypt(cipher, text, key);
             else cout << "Usage: decrypt <cipher> <key> <text>" << endl;
-        } else if (string_has_prefix(command_str, "bruteforce")) { // Bruteforce 🛠️
+        } else if (string_has_prefix(command_str, "bruteforce")) { // Bruteforce
             string			cmd, cipher, text;
 			istringstream	iss(command_str);
 
